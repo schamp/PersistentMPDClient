@@ -7,9 +7,6 @@ class PersistentMPDClient(mpd.MPDClient):
         self.socket = socket
         self.host   = host
         self.port   = port
-        # define as empty so intercepted calls prior to getting the actual list 
-        # don't fail
-        self.command_list = []
 
         self.do_connect()
         # get list of available commands from client
@@ -56,14 +53,14 @@ class PersistentMPDClient(mpd.MPDClient):
             try:
 #                print("Attempting to disconnect.")
                 self.disconnect()
-            # if it's a TCP connection, we'll get a socket error 
+            # if it's a TCP connection, we'll get a socket error
             # if we try to disconnect when the connection is lost
             except mpd.ConnectionError as e:
 #                print("Disconnect failed, so what?")
                 pass
             # if it's a socket connection, we'll get a BrokenPipeError
             # if we try to disconnect when the connection is lost
-            # but we have to retry the disconnect, because we'll get 
+            # but we have to retry the disconnect, because we'll get
             # an "Already connected" error if we don't.
             # the second one should succeed.
             except BrokenPipeError as e:
